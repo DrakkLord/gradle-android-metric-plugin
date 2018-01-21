@@ -1,0 +1,98 @@
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+
+// This is needed because buildSrc is a separate project
+// and relative paths should be handled differently if this
+// file is applied from the buildSrc project
+def rootDirAdjusted = new File(rootDir, "metric");
+if (!rootDirAdjusted.exists()) {
+    rootDirAdjusted = new File(rootDir, "../")
+} else {
+    rootDirAdjusted = rootDir
+}
+
+checkstyle {
+    toolVersion = '8.1'
+}
+
+pmd {
+    toolVersion = '5.8.1'
+}
+
+// Detect if if the project that included this file is using android or not
+def isAndroidProject() {
+    for (p in plugins) {
+        def cName = p.getClass().getSimpleName()
+        if (cName.equals("AppPlugin") || cName.equals("LibraryPlugin")) {
+            return true
+        }
+    }
+    return false
+}
+
+// In Android projects the check plugins don't make any check tasks so here we need to make them
+// Source property sets the directory to be analyzed relative to the project's base folder
+if (isAndroidProject()) {
+    check.dependsOn 'checkstyle', 'pmd'
+
+    task checkstyle(type: Checkstyle, description: 'Run checkstyle analysis for all classes') {
+        source 'src'
+        classpath = files()
+    }
+
+    task pmd(type: Pmd,description: 'Run pmd analysis for all classes') {
+        source = 'src'
+    }
+}
+
+// This is the actual configuration used in Android and Java projects
+tasks.withType(Checkstyle) {
+    ignoreFailures = true
+    showViolations = false
+    configFile = new File(rootDirAdjusted, "metric/checkstyle-gradle.xml")
+
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+
+    include '**/*.java'
+    exclude '**/generated/**'
+}
+
+tasks.withType(Pmd) {
+    ignoreFailures = true
+    ruleSets = []
+    ruleSetFiles = files(new File(rootDirAdjusted, "metric/pmd-ruleset.xml"))
+
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+
+    include '**/*.java'
+    exclude '**/generated/**'
+}
+
+// This step is only needed for pure Java projects because they register tasks by sourceset but not a generic task that runs all of them
+if (!isAndroidProject()) {
+    afterEvaluate {
+        task checkstyle(type: Checkstyle, description: 'Run checkstyle analysis for all classes') {
+            dependsOn = []
+            for (set in sourceSets) {
+                dependsOn += tasks.getByName("checkstyle" + capitalize(set.name))
+            }
+        }
+
+        task pmd(type: Pmd, description: 'Run pmd analysis for all classes') {
+            dependsOn = []
+            for (set in sourceSets) {
+                dependsOn += tasks.getByName("pmd" + capitalize(set.name))
+            }
+        }
+    }
+}
+
+String capitalize(String line) {
+   return (String) (Character.toUpperCase(line.charAt(0))) + line.substring(1);
+}

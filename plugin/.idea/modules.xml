@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/module_checkstyle/gradle-android-metric-checkstyle.iml" filepath="$PROJECT_DIR$/module_checkstyle/gradle-android-metric-checkstyle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/gradle-android-metric-core.iml" filepath="$PROJECT_DIR$/core/gradle-android-metric-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_pmd/gradle-android-metric-pmd.iml" filepath="$PROJECT_DIR$/module_pmd/gradle-android-metric-pmd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/metric-contributor-api/metric-contributor-api.iml" filepath="$PROJECT_DIR$/metric-contributor-api/metric-contributor-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_checkstyle-tooling/module_checkstyle-tooling.iml" filepath="$PROJECT_DIR$/module_checkstyle-tooling/module_checkstyle-tooling.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_pmd-tooling/module_pmd-tooling.iml" filepath="$PROJECT_DIR$/module_pmd-tooling/module_pmd-tooling.iml" />
+    </modules>
+  </component>
+</project>

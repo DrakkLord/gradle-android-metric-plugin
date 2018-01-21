@@ -1,0 +1,1 @@
+ant -buildfile gradle-android-metric-plugin.xml

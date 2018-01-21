@@ -1,0 +1,5 @@
+include ':lib:testJava'
+include ':lib:testAndroid'
+
+include ':app:javaApplication'
+include ':app:androidApplication'

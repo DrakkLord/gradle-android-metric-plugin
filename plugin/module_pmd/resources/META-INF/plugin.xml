@@ -1,0 +1,26 @@
+<idea-plugin>
+  <id>com.drakklord.gradle.metric.pmd</id>
+  <name>Android Gradle Metrics - PMD</name>
+  <version>1.0.6</version>
+  <vendor>Drakk Lord</vendor>
+  <description><![CDATA[
+Contributor for <a href="https://plugins.jetbrains.com/plugin/9196?pr=idea">Android Gradle Metrics</a> plugin.<br><br>
+This contributor adds support for running and showing results from <a href="https://docs.gradle.org/current/userguide/pmd_plugin.html">PMD</a> gradle tasks.<br>
+The plugin requires xml reports and ignoreFailures to be enabled for PMD tasks in order to work correctly.
+  ]]></description>
+  <change-notes><![CDATA[
+<ul>
+<li>added warning is ignoreFailures is not enabled for the report generator in gradle</li>
+<li>added recursive xml report search</li>
+</ul>
+  ]]></change-notes>
+  <idea-version since-build="171.0"/> <!-- Android Studio 3.* and up -->
+
+  <depends>org.jetbrains.android</depends>
+  <depends>com.intellij.modules.androidstudio</depends>
+  <depends>com.drakklord.gradle.metric.core</depends>
+
+  <extensions defaultExtensionNs="com.drakklord.metric">
+    <GradleMetricContributor implementation="com.drakklord.gradle.metric.pmd.contributor.GradleMetricPMDContributor"/>
+  </extensions>
+</idea-plugin>

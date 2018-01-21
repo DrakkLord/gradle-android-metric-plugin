@@ -1,0 +1,77 @@
+<idea-plugin>
+  <id>com.drakklord.gradle.metric.core</id>
+  <name>Android Gradle Metrics</name>
+  <version>1.0.6</version>
+  <vendor>Drakk Lord</vendor>
+  <description><![CDATA[
+Plugin for showing code quality metrics from gradle tasks within Android Studio.
+This plugin adds a new menu option <b>Get code metrics report</b> under <b>Analyze</b>
+which runs code quality tasks on all eligible projects and shows the results in a tool window.<br><br>
+You must download additional plugins which add support for specific code quality tools:<br>
+<ul>
+<li><a href="https://plugins.jetbrains.com/plugin/9197?pr=idea">Android Gradle Metrics - Checkstyle</a></li>
+<li><a href="https://plugins.jetbrains.com/plugin/9198?pr=idea">Android Gradle Metrics - PMD</a></li>
+</ul>
+<br>
+The plugin requires that the corresponding report generator in gradle is configured so that xml reports are enabled and ignoreFailures is set to true, the plugin can only process output after a successful gradle build.
+  ]]></description>
+  <change-notes><![CDATA[
+<ul>
+<li>added warning is ignoreFailures is not enabled for the report generator in gradle</li>
+<li>added recursive xml report search</li>
+</ul>
+  ]]></change-notes>
+  <idea-version since-build="171.0"/> <!-- Android Studio 3.* and up -->
+
+  <depends>org.jetbrains.android</depends>
+  <depends>com.intellij.modules.androidstudio</depends>
+  <depends>org.jetbrains.plugins.gradle</depends>
+
+  <extensionPoints>
+    <extensionPoint qualifiedName="com.drakklord.metric.GradleMetricContributor"
+                    interface="com.drakklord.gradle.metric.core.contributor.GradleMetricContributor"/>
+  </extensionPoints>
+
+  <actions>
+    <group id="GradleMetricActionGroup" text="Gradle Metric Actions" description="Actions for gradle metric plugin" popup="false">
+
+      <action id="gradle.metric.execute" class="com.drakklord.gradle.metric.core.actions.GetMetricsAction"
+              text="Get code metrics of project"
+              description="Get metric for the whole project from gradle and display the results">
+        <keyboard-shortcut keymap="$default" first-keystroke="alt shift m"/>
+      </action>
+      <action id="gradle.metric.configReport" class="com.drakklord.gradle.metric.core.actions.GetMetricsConfigReport"
+              text="Get code metrics configuration report"
+              description="Show a configuration report of the metric plugin for the whole project">
+      </action>
+      <separator/>
+      <add-to-group group-id="AnalyzeActions" anchor="first"/>
+    </group>
+  </actions>
+
+  <project-components>
+    <component>
+      <implementation-class>com.drakklord.gradle.metric.core.components.GradleMetricProjectCoreComponent
+      </implementation-class>
+      <skipForDefaultProject/>
+    </component>
+  </project-components>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="Gradle Metric"
+                anchor="bottom"
+                icon="/icons/appModule.png"
+                factoryClass="com.drakklord.gradle.metric.core.view.GradleMetricResultsToolWindowFactory"/>
+
+    <projectService serviceImplementation="com.drakklord.gradle.metric.core.view.GradleMetricResultsView"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
+    <projectResolve implementation="com.drakklord.gradle.metric.core.model.GradleMetricProjectResolver"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <externalProjectDataService implementation="com.drakklord.gradle.metric.core.model.GradleMetricModelDataService" />
+    <facetType implementation="com.drakklord.gradle.metric.core.model.GradleMetricFacetType"/>
+  </extensions>
+</idea-plugin>

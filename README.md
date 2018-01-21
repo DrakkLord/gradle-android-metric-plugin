@@ -14,8 +14,8 @@ Set of plugins for [Android Studio](https://developer.android.com/studio/index.h
 
 - [Android Studio](https://developer.android.com/studio/index.html) version **3.0** or newer is required!
 - [Gradle](https://gradle.org/) version **4.0** or **newer** is required! It doesn't matter if gradle is being used from wrapper or globally installed but it must be **4.0** or **newer**.
-- at least one contributor plugin must be installed, see installation section for details
-- because gradle metric tasks are being used in order for the plugin to report anything the project being used must have at least one project with [PMD](https://docs.gradle.org/current/userguide/pmd_plugin.html) or [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html) plugin applied and the corresponding contributor plugin installed in Android Studio, see usage for details
+- at least one contributor plugin must be installed, see [installation](#installation) section for details
+- because gradle metric tasks are being used in order for the plugin to report anything the project being used must have at least one project with [PMD](https://docs.gradle.org/current/userguide/pmd_plugin.html) or [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html) plugin applied and the corresponding contributor plugin installed in Android Studio, see [usage](#usage) for details
 
 ## [Installation](#installation) ##
 
@@ -41,11 +41,12 @@ The plugin requires your project to have at least one project with one gradle me
 
 Dynamic resolution of configuration is *NOT* supported, for example setting the destination from a variable won't be recognised by the plugin and it will revert to the default folder, workaround is to use string literals.
 ```
-**def variable = "$buildDird/whatever.html"**
+def variable = "$buildDird/whatever.html"
 checkstyleTask {
   reports {
     html {
-      **destination variable**
+      destination variable // plugin won't be able to use this
+      destination "reports/checkstyle/whatever.html" // this is okay
     }
   }
 }

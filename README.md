@@ -127,3 +127,5 @@ The main plugin does not include any implementation for specific gradle metric p
 [GradleMetricContributor - contributor plugin interface](https://github.com/DrakkLord/gradle-android-metric-plugin/blob/master/plugin/metric-contributor-api/src/com/drakklord/gradle/metric/core/contributor/GradleMetricContributor.java)
 
 [GradleMetricCheckstyleContributor - implementation of the interface for checkstyle](https://github.com/DrakkLord/gradle-android-metric-plugin/blob/master/plugin/module_checkstyle/src/com/drakklord/gradle/metric/checkstyle/contributor/GradleMetricCheckstyleContributor.java)
+
+With this you can implement your own contributor plugin if needed for your own custom gradle metric report tasks.

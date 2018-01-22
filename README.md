@@ -67,7 +67,7 @@ pmd {
 }
 
 tasks.withType(Checkstyle) {
-    ignoreFailures = true // recommended because the plugin will report only up to the point the first issue if this is not set
+    ignoreFailures = true // REQUIRED because the plugin will report only up to the point the first issue if this is not set
     showViolations = false
     
     reports {
@@ -78,7 +78,7 @@ tasks.withType(Checkstyle) {
 }
 
 tasks.withType(Pmd) {
-    ignoreFailures = true // recommended because the plugin will report only up to the point the first issue if this is not set
+    ignoreFailures = true // REQUIRED because the plugin will report only up to the point the first issue if this is not set
 
     reports {
         xml.enabled = true  // REQUIRED the plugin parses xml reports so this is essential

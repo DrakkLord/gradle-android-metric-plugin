@@ -21,12 +21,12 @@ Set of plugins for [Android Studio](https://developer.android.com/studio/index.h
 
 You can install the pugins from the jetbrains repository within Android Studio : https://www.jetbrains.com/help/idea/installing-updating-and-uninstalling-repository-plugins.html
 
-In android studio search for the following names and install them:
-- [Android Gradle Metrics](https://plugins.jetbrains.com/plugin/9196-android-gradle-metrics) - this is the main plugin, it doesn't work on it's own it requires at least one contributor plugin
+In Android Studio search for the following names and install them:
+- [Android Gradle Metrics](https://plugins.jetbrains.com/plugin/9196-android-gradle-metrics) - this is the main plugin, it doesn't work on its own it requires at least one contributor plugin
 - [Android Gradle Metrics - Checkstyle](https://plugins.jetbrains.com/plugin/9197-android-gradle-metrics--checkstyle) - contributor plugin that processes [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html) reports
 - [Android Gradle Metrics - PMD ](https://plugins.jetbrains.com/plugin/9198-android-gradle-metrics--pmd) - contributor plugin that processes [PMD](https://docs.gradle.org/current/userguide/pmd_plugin.html) reports
 
-You can verify that you insalled correctly by:
+You can verify that you you have completed the installation correctly by checking:
 
 - you should see 2 new menu items under 'Analyze':
    - 'Get code metrics report'
@@ -39,7 +39,7 @@ The plugin requires your project to have at least one project with one gradle me
 
 **IMPORTANT**
 
-Dynamic resolution of configuration is *NOT* supported, for example setting the destination from a variable won't be recognised by the plugin and it will revert to the default folder, workaround is to use string literals.
+Dynamic resolution of the configuration is *NOT* supported, for example setting the destination from a variable won't be recognised by the plugin and it will revert to the default folder, workaround is to use string literals.
 ```
 def variable = "$buildDird/whatever.html"
 checkstyleTask {
@@ -118,7 +118,7 @@ You should see either 'no issues' or a list of issues, ideally you should see th
     - Android Studio/gradle/gradle-4.1/lib/gradle-core-4.1.jar
     - Android Studio/gradle/gradle-4.1/lib/gradle-base-services-groovy-4.1.jar
 - at this point the plugin should compile
-- for testing and debugging you can make run configurations for each of the 3 plugins, in order to get a working environemnt first start the core plugin, then close android studio then switch to one of the contributor plugins start with that this way you can install the plugins into the test environment
+- for testing and debugging you can make run configurations for each of the 3 plugins, in order to get a working environemnt first start the core plugin, then close Android Studio then switch to one of the contributor plugins and start with that. This way you can install the plugins into the test environment.
 
 ## [Contributor API](#contributor-api) ##
 

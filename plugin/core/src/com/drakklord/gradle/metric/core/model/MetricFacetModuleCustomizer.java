@@ -13,11 +13,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MetricFacetModuleCustomizer {
 
+    @SuppressWarnings("unchecked")
     public void customizeModule(@NotNull Project project,
                                 @NotNull Module module,
                                 @NotNull IdeModifiableModelsProvider modelsProvider,
                                 @Nullable MetricGradleModel androidModel) {
         if (androidModel == null) {
+            // this causes the unchecked warning
             Facets.removeAllFacets(modelsProvider.getModifiableFacetModel(module), GradleMetricFacet.ID);
         }
         else {

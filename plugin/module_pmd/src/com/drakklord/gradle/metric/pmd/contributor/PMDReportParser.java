@@ -37,7 +37,7 @@ public class PMDReportParser {
             throw new GradleMetricContributorException("invalid PMD report file version : " + reportFile.getAbsolutePath());
         }
         final String[] verSplit = reportVersion.split("\\.");
-        if (verSplit == null || verSplit.length < 1) {
+        if (verSplit.length < 1) {
             throw new GradleMetricContributorException("invalid PMD report file version : " + reportFile.getAbsolutePath());
         }
 
@@ -47,6 +47,7 @@ public class PMDReportParser {
         }
 
         // parse file blocks
+        @SuppressWarnings("unchecked")
         Enumeration<IXMLElement> children = root.enumerateChildren();
         if (children == null) {
             return;
@@ -71,6 +72,7 @@ public class PMDReportParser {
             }
 
             // parse error elements
+            @SuppressWarnings("unchecked")
             Enumeration<IXMLElement> errors = e.enumerateChildren();
             if (errors == null) {
                 continue;

@@ -25,10 +25,12 @@ public class GradleInvocationListener implements ExternalSystemTaskNotificationL
         invocationResultCallback = invocationResult;
     }
 
+    @Deprecated
     @Override
     public void onQueued(@NotNull ExternalSystemTaskId externalSystemTaskId, String s) {
     }
 
+    @Deprecated
     @Override
     public void onStart(@NotNull ExternalSystemTaskId externalSystemTaskId) {
     }

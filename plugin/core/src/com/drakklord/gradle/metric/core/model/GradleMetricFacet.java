@@ -1,7 +1,13 @@
 package com.drakklord.gradle.metric.core.model;
 
 import com.intellij.facet.*;
+import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
 public class GradleMetricFacet extends Facet<GradleMetricFacetConfiguration> {
     public static final FacetTypeId<GradleMetricFacet> ID = new FacetTypeId<GradleMetricFacet>("gradle-metric");
     public static final String NAME = "GradleMetric";
-
-    private MetricGradleModel model;
 
     public GradleMetricFacet(@NotNull Module module, String name, @NotNull GradleMetricFacetConfiguration configuration) {
         super(getFacetType(), module, name, configuration, null);
@@ -28,11 +32,11 @@ public class GradleMetricFacet extends Facet<GradleMetricFacetConfiguration> {
     }
 
     public void setMetricModel(MetricGradleModel mm) {
-        model = mm;
+        getConfiguration().setModel(mm);
     }
 
     public MetricGradleModel getMetricModel() {
-        return model;
+        return getConfiguration().getModel();
     }
 
     @Nullable

@@ -19,7 +19,7 @@ public class PMDTaskContainerImpl implements Serializable, PMDTaskContainer {
     private final boolean xmlReportEnabled;
     private final File xmlReportTarget;
 
-    private PMDTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
+    public PMDTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
                                  boolean xmlReportEnabled, File xmlReportTarget) {
         this.name = name;
         this.ignoreFailures = ignoreFailures;

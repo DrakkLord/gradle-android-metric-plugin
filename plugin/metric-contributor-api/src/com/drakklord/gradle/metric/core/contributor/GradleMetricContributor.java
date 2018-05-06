@@ -2,6 +2,7 @@ package com.drakklord.gradle.metric.core.contributor;
 
 import com.intellij.openapi.module.Module;
 import org.gradle.tooling.model.idea.IdeaModule;
+import org.jdom.Element;
 import org.jetbrains.plugins.gradle.service.project.ProjectResolverContext;
 
 import javax.swing.*;
@@ -37,4 +38,10 @@ public interface GradleMetricContributor {
 
     /** Get the model of the contributor for the module. */
     GradleMetricModelHolder getModuleModel(IdeaModule gradleModule, ProjectResolverContext resolverCtx);
+
+    /** Serialize a metric model holder belonging to this contributor into an XML element. */
+    void serializeMetricHolderInto(GradleMetricModelHolder holder, Element out);
+
+    /** Serialize a metric model holder belonging to this contributor from an XML element. */
+    GradleMetricModelHolder serializeMetricHolderFrom(Element in);
 }

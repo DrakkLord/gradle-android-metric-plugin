@@ -310,7 +310,7 @@ public class GradleMetricProjectCoreComponent extends AbstractProjectComponent i
                     showBasicMessage("no issues found", NotificationCategory.SIMPLE);
                 } else {
                     int issueCount = getNumberOfIssues(fullMetricContainer);
-                    addToEventLog(TAG + "found " + issueCount + " issue" + (issueCount > 1 ? "s" : ""), MessageType.WARNING);
+                    addToEventLog(TAG + "found " + issueCount + " issue" + (issueCount > 1 ? "s" : "") + " [without duplicate removal]", MessageType.WARNING);
                 }
                 // TODO: show the UI with the results! + make sure the UI gets hold onto the reference of the metric list!
                 final HashMap<GradleMetricContributor, GradleMetricResultContributor> metricHolder = fullMetricContainer;

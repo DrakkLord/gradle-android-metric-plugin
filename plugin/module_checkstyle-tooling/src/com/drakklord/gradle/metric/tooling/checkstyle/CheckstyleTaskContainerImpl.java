@@ -15,16 +15,15 @@ public class CheckstyleTaskContainerImpl implements Serializable, CheckstyleTask
     private final boolean ignoreFailures;
     private final boolean enabled;
     private final boolean xmlReportEnabled;
+    private final File xmlReportTarget;
 
-    private final File xmlTarget;
-
-    private CheckstyleTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
+    public CheckstyleTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
                                  boolean xmlReportEnabled, File xmlTarget) {
         this.name = name;
         this.ignoreFailures = ignoreFailures;
         this.enabled = enabled;
         this.xmlReportEnabled = xmlReportEnabled;
-        this.xmlTarget = xmlTarget;
+        this.xmlReportTarget = xmlTarget;
     }
 
     public String getName() {
@@ -44,7 +43,7 @@ public class CheckstyleTaskContainerImpl implements Serializable, CheckstyleTask
     }
 
     public File getXmlReportTarget() {
-        return xmlTarget;
+        return xmlReportTarget;
     }
 
     static CheckstyleTaskContainer createFrom(Checkstyle p) {

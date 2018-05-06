@@ -215,22 +215,6 @@ public class MetricTree extends Tree implements ComponentContainer {
 
         private static SimpleTextAttributes getMainForegroundAttributes(InspectionTreeNode node) {
             SimpleTextAttributes foreground = SimpleTextAttributes.REGULAR_ATTRIBUTES;
-            /*
-            if (node instanceof RefElementNode) {
-                RefEntity refElement = ((RefElementNode) node).getElement();
-
-                if (refElement instanceof RefElement) {
-                    refElement = ((RefElement) refElement).getContainingEntry();
-                    if (((RefElement) refElement).isEntry() && ((RefElement) refElement).isPermanentEntry()) {
-                        foreground = new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue);
-                    }
-                }
-            }
-            */
-            final FileStatus nodeStatus = node.getNodeStatus();
-            if (nodeStatus != FileStatus.NOT_CHANGED){
-                foreground = new SimpleTextAttributes(foreground.getBgColor(), nodeStatus.getColor(), foreground.getWaveColor(), foreground.getStyle());
-            }
             return foreground;
         }
 

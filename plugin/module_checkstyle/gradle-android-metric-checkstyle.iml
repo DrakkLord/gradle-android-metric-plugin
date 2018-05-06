@@ -9,7 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="Android Studio AI-171.4443003" jdkType="IDEA JDK" />
+    <orderEntry type="jdk" jdkName="Android Studio AI-173.4720617" jdkType="IDEA JDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="gradle-android-metric-core" scope="PROVIDED" />
     <orderEntry type="module" module-name="metric-contributor-api" scope="PROVIDED" />

@@ -1,7 +1,5 @@
 package com.drakklord.gradle.metric.tooling.pmd;
 
-import org.gradle.api.plugins.quality.Pmd;
-
 import java.util.List;
 
 /**

@@ -7,7 +7,6 @@ import com.android.tools.idea.gradle.project.facet.java.JavaFacet;
 import com.android.tools.idea.gradle.project.sync.GradleSyncListener;
 import com.android.tools.idea.gradle.project.sync.GradleSyncState;
 import com.android.tools.idea.gradle.util.GradleUtil;
-import com.android.tools.idea.gradle.util.Projects;
 import com.android.tools.idea.model.AndroidModel;
 import com.drakklord.gradle.metric.core.Constants;
 import com.drakklord.gradle.metric.core.Extensions;
@@ -25,6 +24,9 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.TransactionGuard;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent;
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener;
 import com.intellij.openapi.externalSystem.service.notification.ExternalSystemNotificationManager;
 import com.intellij.openapi.externalSystem.service.notification.NotificationCategory;
 import com.intellij.openapi.externalSystem.service.notification.NotificationData;
@@ -44,12 +46,11 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.ui.UIUtil;
 import net.n3.nanoxml.*;
-import org.gradle.tooling.BuildAction;
-import org.gradle.tooling.BuildController;
+import org.gradle.internal.invocation.BuildAction;
+import org.gradle.tooling.model.gradle.GradleBuild;
 import org.jetbrains.android.facet.AndroidFacet;
 import org.jetbrains.annotations.NotNull;
 import com.android.tools.idea.gradle.util.BuildMode;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.android.model.impl.JpsAndroidModuleProperties;
 
 import java.io.*;
@@ -59,7 +60,7 @@ import java.util.*;
  * Project component that accesses the built in android gradle plugin and handles metric contributor plugins.
  * Created by DrakkLord on 2015.11.20..
  */
-public class GradleMetricProjectCoreComponent extends AbstractProjectComponent implements GradleBuildInvoker.AfterGradleInvocationTask, GradleMetricUtil, GradleSyncListener {
+public class GradleMetricProjectCoreComponent extends AbstractProjectComponent implements GradleInvocationListener.IGradleInvocationResult, GradleMetricUtil, GradleSyncListener {
 
     private static final String ANDROID_PLUGIN_ID = "org.jetbrains.android";
 
@@ -104,28 +105,11 @@ public class GradleMetricProjectCoreComponent extends AbstractProjectComponent i
         if (!isExtensionsAvailable()) {
             showBasicMessage(Constants.PLUGIN_NAME, Constants.NO_EXTENSIONS, NotificationCategory.ERROR);
         }
-
-        final GradleBuildInvoker gi = GradleBuildInvoker.getInstance(myProject);
-        final GradleBuildInvoker.AfterGradleInvocationTask afterTask = this;
-        TransactionGuard.submitTransaction(this.myProject, new Runnable() {
-            @Override
-            public void run() {
-                gi.add(afterTask);
-            }
-        });
         mInitialized = true;
     }
 
     @Override
     public void projectClosed() {
-        final GradleBuildInvoker gi = GradleBuildInvoker.getInstance(myProject);
-        final GradleBuildInvoker.AfterGradleInvocationTask afterTask = this;
-        TransactionGuard.submitTransaction(this.myProject, new Runnable() {
-            @Override
-            public void run() {
-                gi.remove(afterTask);
-            }
-        });
         super.projectClosed();
         mInitialized = false;
         mMetricCheckInProgress = false;
@@ -291,10 +275,11 @@ public class GradleMetricProjectCoreComponent extends AbstractProjectComponent i
         }
 
         final GradleBuildInvoker gi = GradleBuildInvoker.getInstance(myProject);
-        final ArrayList<String> fullTaskList = new ArrayList<String>();
-        fullTaskList.addAll(taskSet);
-        pendingTaskList = fullTaskList;
-        gi.executeTasks(pendingTaskList);
+        pendingTaskList = new ArrayList<String>(taskSet);
+        final File rootGradleBuildFile = GradleUtil.getGradleBuildFilePath(new File(myProject.getBaseDir().getPath()));
+        final GradleBuildInvoker.Request rq = new GradleBuildInvoker.Request(myProject, rootGradleBuildFile, pendingTaskList);
+        rq.setTaskListener(new GradleInvocationListener(this));
+        gi.executeTasks(rq);
     }
 
     // NOTE: this runs on the 'UI thread'!
@@ -623,45 +608,8 @@ public class GradleMetricProjectCoreComponent extends AbstractProjectComponent i
     }
 
     @Override
-    public void execute(@NotNull GradleInvocationResult gradleInvocationResult) {
+    public void syncStarted(@NotNull Project project, boolean b, boolean b1) {
 
-        // check the pending task list and it the same thing that we asked for then processed otherwise ignore the call
-        if (pendingTaskList == null || pendingTaskList.isEmpty()) {
-            mMetricCheckInProgress = false;
-            return;
-        }
-
-        final List<String> targetTasks = gradleInvocationResult.getTasks();
-        for (String task : targetTasks) {
-            boolean found = false;
-            for (String ptask : pendingTaskList) {
-                if (ptask.equalsIgnoreCase(task)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                return;
-            }
-        }
-        pendingTaskList = null;
-        pendingTaskResult = gradleInvocationResult.isBuildSuccessful();
-
-        final GradleResultCollectorTask collector = new GradleResultCollectorTask(myProject);
-        if (ApplicationManager.getApplication().isDispatchThread()) {
-            collector.queue();
-        } else {
-            UIUtil.invokeAndWaitIfNeeded(new Runnable() {
-                @Override
-                public void run() {
-                    collector.queue();
-                }
-            });
-        }
-    }
-
-    @Override
-    public void syncStarted(@NotNull Project project) {
     }
 
     @Override
@@ -683,6 +631,38 @@ public class GradleMetricProjectCoreComponent extends AbstractProjectComponent i
     @Override
     public void syncSkipped(@NotNull Project project) {
 
+    }
+
+    @Override
+    public void initComponent() {
+
+    }
+
+    @Override
+    public void disposeComponent() {
+
+    }
+
+    @Override
+    public void onGradleInvocationCompleted(GradleInvocationListener.EGradleInvocationResult result) {
+        if (pendingTaskList == null || pendingTaskList.isEmpty()) {
+            mMetricCheckInProgress = false;
+            return;
+        }
+        pendingTaskList = null;
+        pendingTaskResult = result == GradleInvocationListener.EGradleInvocationResult.GI_SUCCESS;
+
+        final GradleMetricProjectCoreComponent.GradleResultCollectorTask collector = new GradleMetricProjectCoreComponent.GradleResultCollectorTask(myProject);
+        if (ApplicationManager.getApplication().isDispatchThread()) {
+            collector.queue();
+        } else {
+            UIUtil.invokeAndWaitIfNeeded(new Runnable() {
+                @Override
+                public void run() {
+                    collector.queue();
+                }
+            });
+        }
     }
 
     private class GradleResultCollectorTask extends Task.Backgroundable {

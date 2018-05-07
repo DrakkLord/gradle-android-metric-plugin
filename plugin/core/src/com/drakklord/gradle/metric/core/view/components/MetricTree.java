@@ -136,7 +136,8 @@ public class MetricTree extends Tree implements ComponentContainer {
             }
         }
 
-        TreeUtil.expand(this, 5);
+        TreeUtil.expandAll(this);
+//        TreeUtil.expand(this, 5);
         updateUI();
     }
 

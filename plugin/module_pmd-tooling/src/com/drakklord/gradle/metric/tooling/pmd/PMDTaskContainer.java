@@ -10,5 +10,4 @@ public interface PMDTaskContainer {
     boolean isIgnoreFailures();
     boolean isEnabled();
     boolean isXmlReportEnabled();
-    File getXmlReportTarget();
 }

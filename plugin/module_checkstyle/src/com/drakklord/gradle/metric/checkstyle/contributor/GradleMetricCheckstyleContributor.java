@@ -185,9 +185,6 @@ public class GradleMetricCheckstyleContributor implements GradleMetricContributo
             taskHolder.setAttribute(new Attribute("ignoreFailures", Boolean.toString(t.isIgnoreFailures())));
             taskHolder.setAttribute(new Attribute("enabled", Boolean.toString(t.isEnabled())));
             taskHolder.setAttribute(new Attribute("xmlReportEnabled", Boolean.toString(t.isXmlReportEnabled())));
-            if (t.getXmlReportTarget() != null) {
-                taskHolder.setAttribute(new Attribute("xmlReportTarget", t.getXmlReportTarget().toString()));
-            }
             out.addContent(taskHolder);
         }
     }
@@ -209,12 +206,8 @@ public class GradleMetricCheckstyleContributor implements GradleMetricContributo
             final boolean taskIgnoreFailures = Boolean.parseBoolean(e.getAttributeValue("ignoreFailures"));
             final boolean taskEnabled = Boolean.parseBoolean(e.getAttributeValue("enabled"));
             final boolean taskXmlReportEnabled = Boolean.parseBoolean(e.getAttributeValue("xmlReportEnabled"));
-            String taskXmlReportFile = e.getAttributeValue("xmlReportTarget");
-            if (taskXmlReportFile == null) {
-                taskXmlReportFile = "";
-            }
 
-            tasks.add(new CheckstyleTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled, new File(taskXmlReportFile)));
+            tasks.add(new CheckstyleTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled));
         }
         return new CheckstyleTasksHolder(tasks);
     }

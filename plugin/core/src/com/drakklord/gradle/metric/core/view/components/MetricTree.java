@@ -17,6 +17,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -168,15 +169,8 @@ public class MetricTree extends Tree implements ComponentContainer {
     }
 
     private static class CellRenderer extends ColoredTreeCellRenderer {
-    /*  private Project myProject;
-      InspectionManagerEx myManager;
-      public CellRenderer(Project project) {
-        myProject = project;
-        myManager = (InspectionManagerEx)InspectionManager.getInstance(myProject);
-      }*/
-
         @Override
-        public void customizeCellRenderer(JTree tree,
+        public void customizeCellRenderer(@NotNull JTree tree,
                                           Object value,
                                           boolean selected,
                                           boolean expanded,
@@ -214,8 +208,7 @@ public class MetricTree extends Tree implements ComponentContainer {
         }
 
         private static SimpleTextAttributes getMainForegroundAttributes(InspectionTreeNode node) {
-            SimpleTextAttributes foreground = SimpleTextAttributes.REGULAR_ATTRIBUTES;
-            return foreground;
+            return SimpleTextAttributes.REGULAR_ATTRIBUTES;
         }
 
         private static boolean appearsBold(Object node) {
@@ -230,7 +223,7 @@ public class MetricTree extends Tree implements ComponentContainer {
         }
 
         for (MetricFileScopeTreeNode n : nodes) {
-            if (n.hasScope() && n.navigateToScope()) {
+            if (n.navigateToScope()) {
                 return;
             }
         }

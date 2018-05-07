@@ -174,9 +174,6 @@ public class GradleMetricPMDContributor implements GradleMetricContributor {
             taskHolder.setAttribute(new Attribute("ignoreFailures", Boolean.toString(t.isIgnoreFailures())));
             taskHolder.setAttribute(new Attribute("enabled", Boolean.toString(t.isEnabled())));
             taskHolder.setAttribute(new Attribute("xmlReportEnabled", Boolean.toString(t.isXmlReportEnabled())));
-            if (t.getXmlReportTarget() != null) {
-                taskHolder.setAttribute(new Attribute("xmlReportTarget", t.getXmlReportTarget().toString()));
-            }
             out.addContent(taskHolder);
         }
     }
@@ -198,12 +195,8 @@ public class GradleMetricPMDContributor implements GradleMetricContributor {
             final boolean taskIgnoreFailures = Boolean.parseBoolean(e.getAttributeValue("ignoreFailures"));
             final boolean taskEnabled = Boolean.parseBoolean(e.getAttributeValue("enabled"));
             final boolean taskXmlReportEnabled = Boolean.parseBoolean(e.getAttributeValue("xmlReportEnabled"));
-            String taskXmlReportFile = e.getAttributeValue("xmlReportTarget");
-            if (taskXmlReportFile == null) {
-                taskXmlReportFile = "";
-            }
 
-            tasks.add(new PMDTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled, new File(taskXmlReportFile)));
+            tasks.add(new PMDTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled));
         }
         return new PMDTasksHolder(tasks);
     }

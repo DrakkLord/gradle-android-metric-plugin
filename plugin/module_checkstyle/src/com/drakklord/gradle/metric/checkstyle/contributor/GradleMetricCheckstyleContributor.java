@@ -2,9 +2,20 @@ package com.drakklord.gradle.metric.checkstyle.contributor;
 
 import com.drakklord.gradle.metric.core.contributor.*;
 import com.drakklord.gradle.metric.tooling.checkstyle.CheckstyleMetricModel;
+import com.drakklord.gradle.metric.tooling.checkstyle.CheckstyleMetricModelImpl;
 import com.drakklord.gradle.metric.tooling.checkstyle.CheckstyleTaskContainer;
+import com.drakklord.gradle.metric.tooling.checkstyle.CheckstyleTaskContainerImpl;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import org.gradle.tooling.model.idea.IdeaModule;
+import org.jdom.Attribute;
+import org.jdom.Element;
 import org.jetbrains.plugins.gradle.service.project.ProjectResolverContext;
 
 import javax.swing.*;
@@ -156,5 +167,48 @@ public class GradleMetricCheckstyleContributor implements GradleMetricContributo
             return null;
         }
         return new CheckstyleTasksHolder(chk.getTasks());
+    }
+
+    @Override
+    public void serializeMetricHolderInto(GradleMetricModelHolder holder, Element out) {
+        if (!(holder instanceof CheckstyleTasksHolder)) {
+            throw new IllegalArgumentException("unable to serialize metric holder of different type");
+        }
+        final CheckstyleTasksHolder localHolder = (CheckstyleTasksHolder) holder;
+
+        final Map<String, CheckstyleTaskContainer> tasks = localHolder.getTasks();
+        for (Map.Entry<String, CheckstyleTaskContainer> taskInfo : tasks.entrySet()) {
+            final CheckstyleTaskContainer t = taskInfo.getValue();
+
+            final Element taskHolder = new Element(taskInfo.getKey());
+            taskHolder.setAttribute(new Attribute("name", t.getName()));
+            taskHolder.setAttribute(new Attribute("ignoreFailures", Boolean.toString(t.isIgnoreFailures())));
+            taskHolder.setAttribute(new Attribute("enabled", Boolean.toString(t.isEnabled())));
+            taskHolder.setAttribute(new Attribute("xmlReportEnabled", Boolean.toString(t.isXmlReportEnabled())));
+            out.addContent(taskHolder);
+        }
+    }
+
+    @Override
+    public GradleMetricModelHolder serializeMetricHolderFrom(Element in) {
+        final ArrayList<CheckstyleTaskContainer> tasks = new ArrayList<CheckstyleTaskContainer>();
+        for (Element e : in.getChildren()) {
+            final String taskName = e.getName();
+            if (taskName == null) {
+                continue;
+            }
+
+            final String taskNameInner = e.getAttributeValue("name");
+            if (!taskName.equalsIgnoreCase(taskNameInner)) {
+                continue;
+            }
+
+            final boolean taskIgnoreFailures = Boolean.parseBoolean(e.getAttributeValue("ignoreFailures"));
+            final boolean taskEnabled = Boolean.parseBoolean(e.getAttributeValue("enabled"));
+            final boolean taskXmlReportEnabled = Boolean.parseBoolean(e.getAttributeValue("xmlReportEnabled"));
+
+            tasks.add(new CheckstyleTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled));
+        }
+        return new CheckstyleTasksHolder(tasks);
     }
 }

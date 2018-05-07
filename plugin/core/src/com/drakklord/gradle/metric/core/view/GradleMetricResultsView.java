@@ -92,7 +92,7 @@ public class GradleMetricResultsView implements Disposable {
   private static JLabel getNothingToShowTextLabel() {
     final JLabel multipleSelectionLabel = new JBLabel("Nothing to show");
     multipleSelectionLabel.setVerticalAlignment(SwingConstants.TOP);
-    multipleSelectionLabel.setBorder(IdeBorderFactory.createEmptyBorder(5, 14, 0, 0));
+    multipleSelectionLabel.setBorder(BorderFactory.createEmptyBorder(5, 14, 0, 0));
     return multipleSelectionLabel;
   }
 

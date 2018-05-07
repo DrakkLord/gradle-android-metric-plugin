@@ -2,9 +2,13 @@ package com.drakklord.gradle.metric.pmd.contributor;
 
 import com.drakklord.gradle.metric.core.contributor.*;
 import com.drakklord.gradle.metric.tooling.pmd.PMDMetricModel;
+import com.drakklord.gradle.metric.tooling.pmd.PMDMetricModelImpl;
 import com.drakklord.gradle.metric.tooling.pmd.PMDTaskContainer;
+import com.drakklord.gradle.metric.tooling.pmd.PMDTaskContainerImpl;
 import com.intellij.openapi.module.Module;
 import org.gradle.tooling.model.idea.IdeaModule;
+import org.jdom.Attribute;
+import org.jdom.Element;
 import org.jetbrains.plugins.gradle.service.project.ProjectResolverContext;
 
 import javax.swing.*;
@@ -152,5 +156,48 @@ public class GradleMetricPMDContributor implements GradleMetricContributor {
             return null;
         }
         return new PMDTasksHolder(pmd.getTasks());
+    }
+
+    @Override
+    public void serializeMetricHolderInto(GradleMetricModelHolder holder, Element out) {
+        if (!(holder instanceof PMDTasksHolder)) {
+            throw new IllegalArgumentException("unable to serialize metric holder of different type");
+        }
+        final PMDTasksHolder localHolder = (PMDTasksHolder) holder;
+
+        final Map<String, PMDTaskContainer> tasks = localHolder.getTasks();
+        for (Map.Entry<String, PMDTaskContainer> taskInfo : tasks.entrySet()) {
+            final PMDTaskContainer t = taskInfo.getValue();
+
+            final Element taskHolder = new Element(taskInfo.getKey());
+            taskHolder.setAttribute(new Attribute("name", t.getName()));
+            taskHolder.setAttribute(new Attribute("ignoreFailures", Boolean.toString(t.isIgnoreFailures())));
+            taskHolder.setAttribute(new Attribute("enabled", Boolean.toString(t.isEnabled())));
+            taskHolder.setAttribute(new Attribute("xmlReportEnabled", Boolean.toString(t.isXmlReportEnabled())));
+            out.addContent(taskHolder);
+        }
+    }
+
+    @Override
+    public GradleMetricModelHolder serializeMetricHolderFrom(Element in) {
+        final ArrayList<PMDTaskContainer> tasks = new ArrayList<PMDTaskContainer>();
+        for (Element e : in.getChildren()) {
+            final String taskName = e.getName();
+            if (taskName == null) {
+                continue;
+            }
+
+            final String taskNameInner = e.getAttributeValue("name");
+            if (!taskName.equalsIgnoreCase(taskNameInner)) {
+                continue;
+            }
+
+            final boolean taskIgnoreFailures = Boolean.parseBoolean(e.getAttributeValue("ignoreFailures"));
+            final boolean taskEnabled = Boolean.parseBoolean(e.getAttributeValue("enabled"));
+            final boolean taskXmlReportEnabled = Boolean.parseBoolean(e.getAttributeValue("xmlReportEnabled"));
+
+            tasks.add(new PMDTaskContainerImpl(taskNameInner, taskIgnoreFailures, taskEnabled, taskXmlReportEnabled));
+        }
+        return new PMDTasksHolder(tasks);
     }
 }

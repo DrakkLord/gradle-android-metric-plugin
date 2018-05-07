@@ -10,5 +10,4 @@ public interface CheckstyleTaskContainer {
     boolean isIgnoreFailures();
     boolean isEnabled();
     boolean isXmlReportEnabled();
-    File getXmlReportTarget();
 }

@@ -47,6 +47,7 @@ public class CheckstyleReportParser {
         }
 
         // parse file blocks
+        @SuppressWarnings("unchecked")
         Enumeration<IXMLElement> children = root.enumerateChildren();
         if (children == null) {
             return;
@@ -71,6 +72,7 @@ public class CheckstyleReportParser {
             }
 
             // parse error elements
+            @SuppressWarnings("unchecked")
             Enumeration<IXMLElement> errors = e.enumerateChildren();
             if (errors == null) {
                 continue;
@@ -97,7 +99,7 @@ public class CheckstyleReportParser {
                     throw new GradleMetricContributorException("no source for error element of checkstyle report : " + reportFile.getAbsolutePath());
                 }
                 final String[] sourceSpl = source.split("\\.");
-                if (sourceSpl == null || sourceSpl.length < 2) {
+                if (sourceSpl.length < 2) {
                     throw new GradleMetricContributorException("unable to split source value for error element of checkstyle report : " + reportFile.getAbsolutePath());
                 }
 

@@ -1,7 +1,5 @@
 package com.drakklord.gradle.metric.tooling.pmd;
 
-import org.gradle.api.reporting.SingleFileReport;
-
 import java.io.File;
 
 /**
@@ -12,5 +10,4 @@ public interface PMDTaskContainer {
     boolean isIgnoreFailures();
     boolean isEnabled();
     boolean isXmlReportEnabled();
-    File getXmlReportTarget();
 }

@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.drakklord.gradle.metric.checkstyle</id>
   <name>Android Gradle Metrics - Checkstyle</name>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <vendor>Drakk Lord</vendor>
   <description><![CDATA[
 Contributor for <a href="https://plugins.jetbrains.com/plugin/9196?pr=idea">Android Gradle Metrics</a> plugin.<br><br>
@@ -10,11 +10,10 @@ The plugin requires xml reports and ignoreFailures to be enabled for checkstyle 
   ]]></description>
   <change-notes><![CDATA[
 <ul>
-<li>added warning is ignoreFailures is not enabled for the report generator in gradle</li>
-<li>added recursive xml report search</li>
+<li>added Android Studio 3.1 support</li>
 </ul>
   ]]></change-notes>
-  <idea-version since-build="171.0"/> <!-- Android Studio 3.* and up -->
+  <idea-version since-build="173.0"/> <!-- Android Studio 3.1 and up -->
 
   <depends>org.jetbrains.android</depends>
   <depends>com.intellij.modules.androidstudio</depends>

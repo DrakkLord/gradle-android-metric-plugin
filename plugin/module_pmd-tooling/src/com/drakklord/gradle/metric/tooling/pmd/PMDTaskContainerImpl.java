@@ -17,15 +17,13 @@ public class PMDTaskContainerImpl implements Serializable, PMDTaskContainer {
     private final boolean ignoreFailures;
     private final boolean enabled;
     private final boolean xmlReportEnabled;
-    private final File xmlReportTarget;
 
-    private PMDTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
-                                 boolean xmlReportEnabled, File xmlReportTarget) {
+    public PMDTaskContainerImpl(String name, boolean ignoreFailures, boolean enabled,
+                                 boolean xmlReportEnabled) {
         this.name = name;
         this.ignoreFailures = ignoreFailures;
         this.enabled = enabled;
         this.xmlReportEnabled = xmlReportEnabled;
-        this.xmlReportTarget = xmlReportTarget;
     }
 
     public String getName() {
@@ -44,20 +42,14 @@ public class PMDTaskContainerImpl implements Serializable, PMDTaskContainer {
         return xmlReportEnabled;
     }
 
-    @Override
-    public File getXmlReportTarget() {
-        return xmlReportTarget;
-    }
-
     static PMDTaskContainer createFrom(Pmd p) {
         final PmdReports r = p.getReports();
 
         return new PMDTaskContainerImpl(p.getName(), p.getIgnoreFailures(), p.getEnabled(),
-                                        r.getXml().isEnabled(), r.getXml().getDestination());
+                                        r.getXml().isEnabled());
     }
 
     public static PMDTaskContainer copy(PMDTaskContainer o) {
-        return new PMDTaskContainerImpl(o.getName(), o.isIgnoreFailures(), o.isEnabled(),
-                                        o.isXmlReportEnabled(), o.getXmlReportTarget());
+        return new PMDTaskContainerImpl(o.getName(), o.isIgnoreFailures(), o.isEnabled(), o.isXmlReportEnabled());
     }
 }

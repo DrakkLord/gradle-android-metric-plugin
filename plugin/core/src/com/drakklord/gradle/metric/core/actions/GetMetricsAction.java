@@ -1,13 +1,10 @@
 package com.drakklord.gradle.metric.core.actions;
 
-import com.android.tools.idea.navigator.AndroidProjectViewPane;
 import com.drakklord.gradle.metric.core.components.GradleMetricProjectCoreComponent;
 import com.drakklord.gradle.metric.core.model.GradleMetricFacet;
 import com.drakklord.gradle.metric.core.model.MetricGradleModel;
 import com.drakklord.gradle.metric.core.resources.PluginBundle;
-import com.intellij.notification.impl.NotificationActionProvider;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;

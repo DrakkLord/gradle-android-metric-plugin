@@ -1,18 +1,8 @@
 package com.drakklord.gradle.metric.core.view.components.treenodes;
 
-import com.drakklord.gradle.metric.core.contributor.GradleMetricEntry;
-import com.drakklord.gradle.metric.core.contributor.GradleMetricTextUtil;
 import com.drakklord.gradle.metric.core.contributor.model.GradleMetricEntryWrapper;
-import com.intellij.codeInspection.ui.InspectionTreeNode;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionManager;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.pom.Navigatable;
 import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -25,34 +15,30 @@ public class MetricFileScopeTreeNode extends MetricAbstractTreeNode {
 
     private final GradleMetricEntryWrapper entry;
 
-    private final String text;
-    private final Icon icon;
-    private final PsiElement scope;
+    private String text;
+    private Icon icon;
 
     public MetricFileScopeTreeNode(GradleMetricEntryWrapper userObject) {
         super(userObject);
         entry = userObject;
 
-        if (entry.psiTarget != null) {
-            icon = entry.psiTarget.getIcon(PsiFile.ICON_FLAG_VISIBILITY);
-            text = entry.psiTarget.getName();
-/*
-            if (entry.psiDirectTarget != null) {
-                scope = entry.psiDirectTarget;
-            } else {
-                scope = entry.psiTarget;
-            }*/
-        } else if (entry.psiFile != null) {
-            icon = entry.psiFile.getIcon(PsiFile.ICON_FLAG_VISIBILITY);
-            text = entry.psiFile.getName();
-//            scope = entry.psiFile;
+        icon = null;
+        text = null;
+        final GradleMetricEntryWrapper.PsiInfoPacket info = entry.getPsiTargetInfo();
+        if (info != null) {
+            icon = info.icon;
+            text = info.text;
         } else {
+            final GradleMetricEntryWrapper.PsiInfoPacket infoFile = entry.getPsiFileInfo();
+            if (infoFile != null) {
+                icon = infoFile.icon;
+                text = infoFile.text;
+            }
+        }
+        if (icon == null || text == null) {
             icon = AllIcons.Nodes.CustomRegion;
             text = "UNKNOWN"; // TODO should collect the text the entry is trying to point to
-//            scope = null;
         }
-
-        scope = entry.psiDirectTarget;
     }
 
     @Override
@@ -91,12 +77,7 @@ public class MetricFileScopeTreeNode extends MetricAbstractTreeNode {
         return sb.toString();
     }
 
-    public boolean hasScope() {
-        return scope != null;
-    }
-
     public boolean navigateToScope() {
-        PsiNavigateUtil.navigate(scope);
-        return true;
+        return entry.navigateToPSIElementDirect();
     }
 }

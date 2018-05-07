@@ -4,6 +4,7 @@ import com.drakklord.gradle.metric.core.contributor.*;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import org.gradle.tooling.model.idea.IdeaModule;
+import org.jdom.Element;
 import org.jetbrains.plugins.gradle.model.ExternalProject;
 import org.jetbrains.plugins.gradle.service.project.ProjectResolverContext;
 
@@ -68,6 +69,17 @@ public class GradleMetricMockContributor implements GradleMetricContributor {
 
     @Override
     public GradleMetricModelHolder getModuleModel(IdeaModule gradleModule, ProjectResolverContext resolverCtx) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public void serializeMetricHolderInto(GradleMetricModelHolder holder, Element out) {
+        // TODO
+    }
+
+    @Override
+    public GradleMetricModelHolder serializeMetricHolderFrom(Element in) {
         // TODO
         return null;
     }
